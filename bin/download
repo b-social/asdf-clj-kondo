@@ -55,8 +55,10 @@ check_shasum() {
 download() {
 	local version=$1
 	local download_path=$2
-	local platform="$(get_platform)"
-	local arch="$(get_arch)"
+	local platform
+	platform="$(get_platform)"
+	local arch
+	arch="$(get_arch)"
 	download_url="https://github.com/clj-kondo/clj-kondo/releases/download/v${version}/clj-kondo-${version}-${platform}-${arch}.zip"
 
 	http_code=$(curl -I -w '%{http_code}' -s -o /dev/null "$download_url")
