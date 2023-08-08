@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for cljkondo.
-GH_REPO="https://github.com/b-social/asdf-cljkondo"
-TOOL_NAME="cljkondo"
+# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for clj-kondo.
+GH_REPO="https://github.com/b-social/asdf-clj-kondo"
+TOOL_NAME="clj-kondo"
 TOOL_TEST="clj-kondo"
 
 fail() {
@@ -14,7 +14,7 @@ fail() {
 
 curl_opts=(-fsSL)
 
-# NOTE: You might want to remove this if cljkondo is not hosted on GitHub releases.
+# NOTE: You might want to remove this if clj-kondo is not hosted on GitHub releases.
 if [ -n "${GITHUB_API_TOKEN:-}" ]; then
 	curl_opts=("${curl_opts[@]}" -H "Authorization: token $GITHUB_API_TOKEN")
 fi
@@ -31,8 +31,7 @@ list_github_tags() {
 }
 
 list_all_versions() {
-	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-	# Change this function if cljkondo has other means of determining installable versions.
+	# Change this function if clj-kondo has other means of determining installable versions.
 	list_github_tags
 }
 
@@ -41,7 +40,6 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for cljkondo
 	url="$GH_REPO/archive/v${version}.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
@@ -61,7 +59,7 @@ install_version() {
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
-		# TODO: Assert cljkondo executable exists.
+		# TODO: Assert clj-kondo executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
 		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."

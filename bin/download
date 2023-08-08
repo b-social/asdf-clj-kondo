@@ -64,7 +64,7 @@ download() {
 
 	curl -L "$download_url" -o "${download_path}/clj-kondo.zip"
 
-	if [ "unset" = "${ASDF_CLJKONDO_SKIP_CHECKSUM:-unset}" ]; then
+	if [ "unset" = "${ASDF_CLJ_KONDO_SKIP_CHECKSUM:-unset}" ]; then
 		curl -L "${download_url}.sha256" -o "${download_path}/clj-kondo.zip.sha256"
 
 		echo 'verifying checksum'
