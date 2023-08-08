@@ -20,22 +20,22 @@
 Plugin:
 
 ```shell
-asdf plugin add cljkondo
+asdf plugin add clj-kondo
 # or
-asdf plugin add cljkondo https://github.com/b-social/asdf-cljkondo.git
+asdf plugin add clj-kondo https://github.com/b-social/asdf-cljkondo.git
 ```
 
 cljkondo:
 
 ```shell
 # Show all installable versions
-asdf list-all cljkondo
+asdf list-all clj-kondo
 
 # Install specific version
-asdf install cljkondo latest
+asdf install clj-kondo latest
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global cljkondo latest
+asdf global clj-kondo latest
 
 # Now cljkondo commands are available
 clj-kondo

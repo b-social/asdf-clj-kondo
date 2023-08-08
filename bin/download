@@ -6,53 +6,53 @@ PLUGIN_DIR="$(dirname "${BASH_SOURCE[0]}")/.."
 source "$PLUGIN_DIR/lib/helpers.sh"
 
 get_platform() {
-  local testStr
-  testStr="$(uname | tr '[:upper:]' '[:lower:]')"
-  if [ "$testStr" == "darwin" ]; then
-    echo "macos"
-  else
-    echo "linux"
-  fi
-  return
+	local testStr
+	testStr="$(uname | tr '[:upper:]' '[:lower:]')"
+	if [ "$testStr" == "darwin" ]; then
+		echo "macos"
+	else
+		echo "linux"
+	fi
+	return
 }
 
-get_arch(){
+get_arch() {
 	declare arch
-  arch="$(uname -m)"
-  if [ "$arch" == 'x86_64' ]; then
-    echo 'amd64'
-  elif [ "$arch" == 'arm64' ]; then
-    echo 'aarch64'
-  elif [ "$arch" == 'i386' ]; then
-    echo '32'
-  elif [ "$arch" == 'i686' ]; then
-    echo '32'
-  else
-    error_exit 'Sadly, there are no official releases for your architecture'
-  fi
-  return
+	arch="$(uname -m)"
+	if [ "$arch" == 'x86_64' ]; then
+		echo 'amd64'
+	elif [ "$arch" == 'arm64' ]; then
+		echo 'aarch64'
+	elif [ "$arch" == 'i386' ]; then
+		echo '32'
+	elif [ "$arch" == 'i686' ]; then
+		echo '32'
+	else
+		error_exit 'Sadly, there are no official releases for your architecture'
+	fi
+	return
 }
 
 check_shasum() {
-  local archive_file_name=$1
-  local authentic_checksum_file=$2
-  local authentic_checksum=""
+	local archive_file_name=$1
+	local authentic_checksum_file=$2
+	local authentic_checksum=""
 
-  authentic_checksum=$(<"$authentic_checksum_file")
+	authentic_checksum=$(<"$authentic_checksum_file")
 
-  if command -v sha256sum >/dev/null 2>&1; then
-    sha256sum \
-      -c <(echo "$authentic_checksum  $archive_file_name")
-  elif command -v shasum >/dev/null 2>&1; then
-    shasum \
-      -a 256 \
-      -c <(echo "$authentic_checksum  $archive_file_name")
-  else
-    fail "sha256sum or shasum is not available for use"
-  fi
+	if command -v sha256sum >/dev/null 2>&1; then
+		sha256sum \
+			-c <(echo "$authentic_checksum  $archive_file_name")
+	elif command -v shasum >/dev/null 2>&1; then
+		shasum \
+			-a 256 \
+			-c <(echo "$authentic_checksum  $archive_file_name")
+	else
+		fail "sha256sum or shasum is not available for use"
+	fi
 }
 
-download(){
+download() {
 	local version=$1
 	local download_path=$2
 	local platform="$(get_platform)"
@@ -60,24 +60,24 @@ download(){
 	download_url="https://github.com/clj-kondo/clj-kondo/releases/download/v${version}/clj-kondo-${version}-${platform}-${arch}.zip"
 
 	http_code=$(curl -I -w '%{http_code}' -s -o /dev/null "$download_url")
-    if [ "$http_code" -eq 404 ] || [ "$http_code" -eq 403 ]; then
-      fail "URL: ${download_url} returned status ${http_code}"
-    fi
+	if [ "$http_code" -eq 404 ] || [ "$http_code" -eq 403 ]; then
+		fail "URL: ${download_url} returned status ${http_code}"
+	fi
 
-    curl -L "$download_url" -o "${download_path}/clj-kondo.zip"
+	curl -L "$download_url" -o "${download_path}/clj-kondo.zip"
 
-    if [ "unset" = "${ASDF_CLJKONDO_SKIP_CHECKSUM:-unset}" ]; then
-      curl -L "${download_url}.sha256" -o "${download_path}/clj-kondo.zip.sha256"
+	if [ "unset" = "${ASDF_CLJKONDO_SKIP_CHECKSUM:-unset}" ]; then
+		curl -L "${download_url}.sha256" -o "${download_path}/clj-kondo.zip.sha256"
 
-      echo 'verifying checksum'
-      if ! check_shasum "${download_path}/clj-kondo.zip" "${download_path}/clj-kondo.zip.sha256"; then
-        fail "Authenticity of package archive can not be assured. Exiting."
-      else
-        msg "checksum verified"
-      fi
-    else
-      err "checksum skipped"
-    fi
+		echo 'verifying checksum'
+		if ! check_shasum "${download_path}/clj-kondo.zip" "${download_path}/clj-kondo.zip.sha256"; then
+			fail "Authenticity of package archive can not be assured. Exiting."
+		else
+			msg "checksum verified"
+		fi
+	else
+		err "checksum skipped"
+	fi
 }
 
 download "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"
