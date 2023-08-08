@@ -6,5 +6,5 @@ source "$PLUGIN_DIR/lib/helpers.sh"
 
 echo "Installing to ${ASDF_INSTALL_PATH}"
 
-unzip "${ASDF_DOWNLOAD_PATH}/clj-kondo.zip"
+unzip -d "${ASDF_DOWNLOAD_PATH}" "${ASDF_DOWNLOAD_PATH}/clj-kondo.zip"
 install ./clj-kondo "${ASDF_INSTALL_PATH}"
