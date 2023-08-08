@@ -64,10 +64,10 @@ download(){
       fail "URL: ${download_url} returned status ${http_code}"
     fi
 
-    curl "$download_url" -o "${download_path}/clj-kondo.zip"
+    curl -L "$download_url" -o "${download_path}/clj-kondo.zip"
 
     if [ "unset" = "${ASDF_CLJKONDO_SKIP_CHECKSUM:-unset}" ]; then
-      curl "${download_url}.sha256" -o "${download_path}/clj-kondo.zip.sha256"
+      curl -L "${download_url}.sha256" -o "${download_path}/clj-kondo.zip.sha256"
 
       echo 'verifying checksum'
       if ! check_shasum "${download_path}/clj-kondo.zip" "${download_path}/clj-kondo.zip.sha256"; then
