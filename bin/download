@@ -20,9 +20,9 @@ get_arch(){
 	declare arch
   arch="$(uname -m)"
   if [ "$arch" == 'x86_64' ]; then
-    echo '64'
+    echo 'amd64'
   elif [ "$arch" == 'arm64' ]; then
-    echo '64'
+    echo 'aarch64'
   elif [ "$arch" == 'i386' ]; then
     echo '32'
   elif [ "$arch" == 'i686' ]; then
