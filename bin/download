@@ -2,22 +2,80 @@
 
 set -euo pipefail
 
-current_script_path=${BASH_SOURCE[0]}
-plugin_dir=$(dirname "$(dirname "$current_script_path")")
+get_platform() {
+  local testStr
+  testStr="$(uname | tr '[:upper:]' '[:lower:]')"
+  if [ "$testStr" == "darwin" ]; then
+    echo "macos"
+  else
+    echo "linux"
+  fi
+  return
+}
 
-# shellcheck source=./lib/utils.bash
-source "${plugin_dir}/lib/utils.bash"
+get_arch(){
+	declare arch
+  arch="$(uname -m)"
+  if [ "$arch" == 'x86_64' ]; then
+    echo '64'
+  elif [ "$arch" == 'arm64' ]; then
+    echo '64'
+  elif [ "$arch" == 'i386' ]; then
+    echo '32'
+  elif [ "$arch" == 'i686' ]; then
+    echo '32'
+  else
+    error_exit 'Sadly, there are no official releases for your architecture'
+  fi
+  return
+}
 
-mkdir -p "$ASDF_DOWNLOAD_PATH"
+check_shasum() {
+  local archive_file_name=$1
+  local authentic_checksum_file=$2
+  local authentic_checksum=""
 
-# TODO: Adapt this to proper extension and adapt extracting strategy.
-release_file="$ASDF_DOWNLOAD_PATH/$TOOL_NAME-$ASDF_INSTALL_VERSION.tar.gz"
+  authentic_checksum=$(<"$authentic_checksum_file")
 
-# Download tar.gz file to the download directory
-download_release "$ASDF_INSTALL_VERSION" "$release_file"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum \
+      -c <(echo "$authentic_checksum  $archive_file_name")
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum \
+      -a 256 \
+      -c <(echo "$authentic_checksum  $archive_file_name")
+  else
+    fail "sha256sum or shasum is not available for use"
+  fi
+}
 
-#  Extract contents of tar.gz file into the download directory
-tar -xzf "$release_file" -C "$ASDF_DOWNLOAD_PATH" --strip-components=1 || fail "Could not extract $release_file"
+download(){
+	local version=$1
+	local download_path=$2
+	local platform, arch
+	platform="$(get_platform)"
+	arch="$(get_arch)"
+	download_url="https://github.com/clj-kondo/clj-kondo/releases/download/v${version}/clj-kondo-${version}-${platform}-${arch}.zip"
 
-# Remove the tar.gz file since we don't need to keep it
-rm "$release_file"
+	http_code=$(curl -I -w '%{http_code}' -s -o /dev/null "$download_url")
+    if [ "$http_code" -eq 404 ] || [ "$http_code" -eq 403 ]; then
+      fail "URL: ${download_url} returned status ${http_code}"
+    fi
+
+    curl "$download_url" -o "${download_path}/clj-kondo.zip"
+
+    if [ "unset" = "${ASDF_CLJKONDO_SKIP_CHECKSUM:-unset}" ]; then
+      curl "${download_url}.sha256" -o "${download_path}/clj-kondo.zip.sha256"
+
+      echo 'verifying checksum'
+      if ! check_shasum "${download_path}/clj-kondo.zip" "${download_path}/clj-kondo.zip.sha256"; then
+        fail "Authenticity of package archive can not be assured. Exiting."
+      else
+        msg "checksum verified"
+      fi
+    else
+      err "checksum skipped"
+    fi
+}
+
+download "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"
