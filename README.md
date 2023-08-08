@@ -1,16 +1,11 @@
-<div align="center">
+# asdf-cljkondo
 
-# asdf-cljkondo [![Build](https://github.com/ssorc3/asdf-cljkondo/actions/workflows/build.yml/badge.svg)](https://github.com/ssorc3/asdf-cljkondo/actions/workflows/build.yml) [![Lint](https://github.com/ssorc3/asdf-cljkondo/actions/workflows/lint.yml/badge.svg)](https://github.com/ssorc3/asdf-cljkondo/actions/workflows/lint.yml)
-
-[cljkondo](https://github.com/b-social/asdf-cljkondo) plugin for the [asdf version manager](https://asdf-vm.com).
-
-</div>
+[clj-kondo](https://github.com/clj-kondo/clj-kondo) plugin for the [asdf version manager](https://asdf-vm.com).
 
 # Contents
 
 - [Dependencies](#dependencies)
 - [Install](#install)
-- [Contributing](#contributing)
 - [License](#license)
 
 # Dependencies
@@ -27,7 +22,7 @@ Plugin:
 ```shell
 asdf plugin add cljkondo
 # or
-asdf plugin add cljkondo https://github.com/ssorc3/asdf-cljkondo.git
+asdf plugin add cljkondo https://github.com/b-social/asdf-cljkondo.git
 ```
 
 cljkondo:
@@ -49,12 +44,6 @@ clj-kondo
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
 install & manage versions.
 
-# Contributing
-
-Contributions of any kind welcome! See the [contributing guide](contributing.md).
-
-[Thanks goes to these contributors](https://github.com/ssorc3/asdf-cljkondo/graphs/contributors)!
-
 # License
 
-See [LICENSE](LICENSE) © [Ben Cross](https://github.com/ssorc3/)
+See [LICENSE](LICENSE) © [Kroo](https://github.com/b-social/)
