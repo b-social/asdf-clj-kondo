@@ -1,4 +1,5 @@
 # asdf-clj-kondo
+![Build status](https://github.com/b-social/asdf-clj-kondo/actions/workflows/build.yml/badge.svg)
 
 [clj-kondo](https://github.com/clj-kondo/clj-kondo) plugin for the [asdf version manager](https://asdf-vm.com).
 
